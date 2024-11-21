@@ -39,16 +39,13 @@ func TestAddGetDelete(t *testing.T) {
 
 	// get
 	g, err := store.Get(p)
+	parcel.Number = p
 	require.NoError(t, err)
-	require.Equal(t, g.Address, parcel.Address)
-	require.Equal(t, g.Client, parcel.Client)
-	require.Equal(t, g.CreatedAt, parcel.CreatedAt)
-	require.Equal(t, g.Status, parcel.Status)
+	require.Equal(t, g, parcel)
 
 	// delete
 	err = store.Delete(p)
 	require.NoError(t, err)
-
 	g, err = store.Get(p)
 	require.Error(t, err)
 	require.ErrorIs(t, err, sql.ErrNoRows)
@@ -77,7 +74,7 @@ func TestSetAddress(t *testing.T) {
 	// check
 	g, err := store.Get(number)
 	require.NoError(t, err)
-	require.Equal(t, g.Address, newAddress)
+	require.Equal(t, newAddress, g.Address)
 }
 
 // TestSetStatus проверяет обновление статуса
@@ -101,7 +98,7 @@ func TestSetStatus(t *testing.T) {
 	// check
 	g, err := store.Get(number)
 	require.NoError(t, err)
-	require.Equal(t, g.Status, newStatus)
+	require.Equal(t, newStatus, g.Status)
 }
 
 // TestGetByClient проверяет получение посылок по идентификатору клиента
@@ -140,9 +137,6 @@ func TestGetByClient(t *testing.T) {
 	for _, parcel := range storedParcels {
 		par, ok := parcelMap[parcel.Number]
 		require.True(t, ok)
-		require.Equal(t, par.Address, parcel.Address)
-		require.Equal(t, par.Client, parcel.Client)
-		require.Equal(t, par.CreatedAt, parcel.CreatedAt)
-		require.Equal(t, par.Status, parcel.Status)
+		require.Equal(t, par, parcel)
 	}
 }
